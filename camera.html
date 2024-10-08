@@ -6,11 +6,11 @@
     <title>Auto Capture Photo</title>
     <style>
         #capturedImage {
-            display: none; /* Hide initially */
+            display: none;
             margin-top: 20px;
             width: 300px;
             height: 200px;
-            border: 2px solid black; /* Optional styling */
+            border: 2px solid black;
         }
     </style>
 </head>
@@ -32,17 +32,26 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = stream;
 
-                // Automatically take the photo after the video feed starts
-                video.addEventListener('loadeddata', () => {
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    const imageData = canvas.toDataURL('image/png');
+                // Automatically take the photo after a short delay (2 seconds)
+                video.addEventListener('loadedmetadata', () => {
+                    setTimeout(() => {
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const imageData = canvas.toDataURL('image/png');
 
-                    // Display the captured image
-                    capturedImage.src = imageData;
-                    capturedImage.style.display = 'block';
+                        // Display the captured image
+                        capturedImage.src = imageData;
+                        capturedImage.style.display = 'block';
 
-                    // Optionally, you can send the image to a server here
-                    // fetch('/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: imageData }) });
+                        // Optionally, send the image data to the server
+                        // fetch('/upload', {
+                        //     method: 'POST',
+                        //     headers: {
+                        //         'Content-Type': 'application/json',
+                        //     },
+                        //     body: JSON.stringify({ image: imageData })
+                        // });
+
+                    }, 2000); // Delay for 2 seconds before capturing the photo
                 });
             } catch (error) {
                 alert('Camera access denied or not available.');
