@@ -32,21 +32,18 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = stream;
 
-                // Automatically take the photo after a short delay (2 seconds)
+                // Automatically take the photo when the video feed is ready
                 video.addEventListener('loadedmetadata', () => {
-                    setTimeout(() => {
-                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        const imageData = canvas.toDataURL('image/png');
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const imageData = canvas.toDataURL('image/png');
 
-                        // Display the captured image
-                        capturedImage.src = imageData;
-                        capturedImage.style.display = 'block';
+                    // Display the captured image
+                    capturedImage.src = imageData;
+                    capturedImage.style.display = 'block';
 
-                        // Stop the camera after capturing the image
-                        const tracks = stream.getTracks();
-                        tracks.forEach(track => track.stop());
-
-                    }, 2000); // Delay for 2 seconds before capturing the photo
+                    // Stop the camera after capturing the image
+                    const tracks = stream.getTracks();
+                    tracks.forEach(track => track.stop());
                 });
             } catch (error) {
                 alert('Camera access denied or not available.');
