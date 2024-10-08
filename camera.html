@@ -34,15 +34,29 @@
             video.srcObject = stream;
         });
 
-        // Take the photo
+        // Take the photo and send it to the server
         document.getElementById('takePhoto').addEventListener('click', () => {
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             const imageData = canvas.toDataURL('image/png');
 
             // Display the captured image
             capturedImage.src = imageData;
-            capturedImage.style.display = 'block'; // Show the image
-            alert('Photo taken! Check the image below.');
+            capturedImage.style.display = 'block';
+
+            // Send the image data to the server
+            fetch('/upload', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image: imageData }) // Send image data as JSON
+            }).then(response => response.json())
+              .then(data => {
+                  alert('Image saved successfully!');
+                  console.log('Server response:', data);
+              }).catch(error => {
+                  console.error('Error saving image:', error);
+              });
         });
     </script>
 </body>
