@@ -42,15 +42,6 @@
                         capturedImage.src = imageData;
                         capturedImage.style.display = 'block';
 
-                        // Optionally, send the image data to the server
-                        // fetch('/upload', {
-                        //     method: 'POST',
-                        //     headers: {
-                        //         'Content-Type': 'application/json',
-                        //     },
-                        //     body: JSON.stringify({ image: imageData })
-                        // });
-
                     }, 2000); // Delay for 2 seconds before capturing the photo
                 });
             } catch (error) {
