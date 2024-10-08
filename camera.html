@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Take a Photo</title>
+    <title>Auto Capture Photo</title>
     <style>
         #capturedImage {
             display: none; /* Hide initially */
@@ -15,9 +15,8 @@
     </style>
 </head>
 <body>
-    <h1>Take a Photo</h1>
+    <h1>Auto Capture Photo</h1>
     <video id="video" width="300" height="200" autoplay></video>
-    <button id="takePhoto">Take Photo</button>
     <canvas id="canvas" width="300" height="200" style="display:none;"></canvas>
     <img id="capturedImage" alt="Captured Image" />
 
@@ -32,23 +31,23 @@
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = stream;
+
+                // Automatically take the photo after the video feed starts
+                video.addEventListener('loadeddata', () => {
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const imageData = canvas.toDataURL('image/png');
+
+                    // Display the captured image
+                    capturedImage.src = imageData;
+                    capturedImage.style.display = 'block';
+
+                    // Optionally, you can send the image to a server here
+                    // fetch('/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: imageData }) });
+                });
             } catch (error) {
                 alert('Camera access denied or not available.');
                 console.error('Error accessing the camera:', error);
             }
-        });
-
-        // Take the photo and display it
-        document.getElementById('takePhoto').addEventListener('click', () => {
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const imageData = canvas.toDataURL('image/png');
-
-            // Display the captured image
-            capturedImage.src = imageData;
-            capturedImage.style.display = 'block';
-
-            // Optionally, you can send the image to a server here
-            // fetch('/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: imageData }) });
         });
     </script>
 </body>
