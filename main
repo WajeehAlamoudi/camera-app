@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take a Photo</title>
+</head>
+<body>
+    <h1>Take a Photo</h1>
+    <button id="openCamera">Open Camera</button>
+    <video id="video" width="300" height="200" autoplay></video>
+    <button id="takePhoto">Take Photo</button>
+    <canvas id="canvas" width="300" height="200" style="display:none;"></canvas>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+
+        // Request access to the camera
+        document.getElementById('openCamera').addEventListener('click', async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+        });
+
+        // Take the photo
+        document.getElementById('takePhoto').addEventListener('click', () => {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/png');
+            console.log(imageData); // You can send this to the server or do something with it
+            alert('Photo taken! Check the console to see the image data.');
+        });
+    </script>
+</body>
+</html>
