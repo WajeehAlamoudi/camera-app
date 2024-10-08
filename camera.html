@@ -16,7 +16,6 @@
 </head>
 <body>
     <h1>Take a Photo</h1>
-    <button id="openCamera">Open Camera</button>
     <video id="video" width="300" height="200" autoplay></video>
     <button id="takePhoto">Take Photo</button>
     <canvas id="canvas" width="300" height="200" style="display:none;"></canvas>
@@ -28,13 +27,18 @@
         const context = canvas.getContext('2d');
         const capturedImage = document.getElementById('capturedImage');
 
-        // Request access to the camera
-        document.getElementById('openCamera').addEventListener('click', async () => {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            video.srcObject = stream;
+        // Automatically request access to the camera when the page loads
+        window.addEventListener('load', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (error) {
+                alert('Camera access denied or not available.');
+                console.error('Error accessing the camera:', error);
+            }
         });
 
-        // Take the photo and send it to the server
+        // Take the photo and display it
         document.getElementById('takePhoto').addEventListener('click', () => {
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             const imageData = canvas.toDataURL('image/png');
@@ -43,20 +47,8 @@
             capturedImage.src = imageData;
             capturedImage.style.display = 'block';
 
-            // Send the image data to the server
-            fetch('/upload', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ image: imageData }) // Send image data as JSON
-            }).then(response => response.json())
-              .then(data => {
-                  alert('Image saved successfully!');
-                  console.log('Server response:', data);
-              }).catch(error => {
-                  console.error('Error saving image:', error);
-              });
+            // Optionally, you can send the image to a server here
+            // fetch('/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: imageData }) });
         });
     </script>
 </body>
