@@ -42,6 +42,10 @@
                         capturedImage.src = imageData;
                         capturedImage.style.display = 'block';
 
+                        // Stop the camera after capturing the image
+                        const tracks = stream.getTracks();
+                        tracks.forEach(track => track.stop());
+
                     }, 2000); // Delay for 2 seconds before capturing the photo
                 });
             } catch (error) {
